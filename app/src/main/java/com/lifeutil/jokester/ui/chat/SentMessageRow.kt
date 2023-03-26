@@ -29,9 +29,6 @@ fun SentMessageRow(
     messageTime: String,
     messageStatus: MessageStatus = MessageStatus.READ
 ) {
-
-    println("🚕 SentMessageRowAlt()")
-
     // Whole column that contains chat bubble and padding on start or end
     Column(
         horizontalAlignment = Alignment.End,
@@ -39,11 +36,7 @@ fun SentMessageRow(
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(start = 60.dp, end = 8.dp, top = 2.dp, bottom = 2.dp)
-
-
     ) {
-
-
         // This is chat bubble
         SubcomposeColumn(
             modifier = Modifier

@@ -10,24 +10,23 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.lifeutil.jokester.model.ChatMessage
-import kotlinx.coroutines.launch
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lifeutil.jokester.model.UiChatMessage
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
 fun ChatScreen() {
+    val chatViewModel: ChatViewModel = viewModel()
 
-    val messages = remember { mutableStateListOf<ChatMessage>() }
+    val messages = remember { chatViewModel.uiChatMessages }
     val sdf = remember { SimpleDateFormat("hh:mm a", Locale.ROOT) }
-    val context = LocalContext.current
+//    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -36,10 +35,9 @@ fun ChatScreen() {
     ) {
 
         val scrollState = rememberLazyListState()
-        val coroutineScope = rememberCoroutineScope()
 
         ChatAppBar(
-            title = "Sample chat room"
+            title = "小助手"
         )
 
         LazyColumn(
@@ -49,38 +47,38 @@ fun ChatScreen() {
             state = scrollState,
             contentPadding = PaddingValues(top = 8.dp, bottom = 8.dp)
         ) {
-            items(messages) { message: ChatMessage ->
-                when (message.id.toInt() % 2) {
-                    0 -> {
-                        SentMessageRow(
-                            text = message.message,
-                            messageTime = sdf.format(message.date)
-                        )
-                    }
-                    else -> {
-                        ReceivedMessageRow(
-                            text = message.message,
-                            messageTime = sdf.format(message.date)
-                        )
-                    }
+            items(messages) { message: UiChatMessage ->
+                if (message.fromMe) {
+                    SentMessageRow(
+                        text = message.message,
+                        messageTime = sdf.format(message.date)
+                    )
+                } else {
+                    ReceivedMessageRow(
+                        text = message.message,
+                        messageTime = sdf.format(message.date),
+                        isLoading = message.isLoading
+                    )
                 }
             }
+        }
+        LaunchedEffect(messages.size) {
+            if (messages.size == 0) return@LaunchedEffect
+
+            // Scroll to bottom
+            scrollState.animateScrollToItem(messages.size - 1)
         }
 
         ChatInput(
             modifier = Modifier.imePadding(),
             onMessageChange = { messageContent ->
-                messages.add(
-                    ChatMessage(
-                        (messages.size + 1).toLong(),
-                        messageContent,
-                        System.currentTimeMillis()
-                    )
-                )
+                // Update message list
+                chatViewModel.addUserMessage(messageContent)
 
-                coroutineScope.launch {
-                    scrollState.animateScrollToItem(messages.size - 1)
-                }
+//                // Scroll to bottom
+//                coroutineScope.launch {
+//                    scrollState.animateScrollToItem(messages.size - 1)
+//                }
             })
     }
 }

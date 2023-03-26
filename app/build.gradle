@@ -18,6 +18,13 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        // get Token from other files
+        Properties properties = new Properties()
+        if (rootProject.file("local.properties").exists()) {
+            properties.load(rootProject.file("local.properties").newDataInputStream())
+        }
+        resValue "string", "API_TOKEN", properties.getProperty("sdk.API_TOKEN", "")
     }
 
     buildTypes {
@@ -65,7 +72,13 @@ dependencies {
     implementation 'com.google.accompanist:accompanist-systemuicontroller:0.27.0'
 
     // Retrofit
-    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+//    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+
+    // OpenAI Kotlin API client BOM
+    implementation platform('com.aallam.openai:openai-client-bom:3.2.0')
+    // define dependencies without versions
+    implementation 'com.aallam.openai:openai-client'
+    implementation 'io.ktor:ktor-client-okhttp'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

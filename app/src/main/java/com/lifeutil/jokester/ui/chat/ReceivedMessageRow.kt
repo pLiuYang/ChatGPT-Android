@@ -16,11 +16,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.lifeutil.jokester.ui.util.SubcomposeColumn
+import com.lifeutil.jokester.ui.util.ThreeDotsLoading
 
 @Composable
 fun ReceivedMessageRow(
     text: String,
     messageTime: String,
+    isLoading: Boolean = false
 ) {
     // Whole column that contains chat bubble and padding on start or end
     Column(
@@ -31,7 +33,6 @@ fun ReceivedMessageRow(
             .padding(start = 8.dp, end = 60.dp, top = 2.dp, bottom = 2.dp)
 
     ) {
-
         // This is chat bubble
         SubcomposeColumn(
             modifier = Modifier
@@ -40,12 +41,14 @@ fun ReceivedMessageRow(
                 .background(Color.White)
                 .clickable { },
             content = {
-
-                ChatFlexBoxLayout(
-                    modifier = Modifier.padding(start = 2.dp, end = 4.dp),
-                    text = text,
-                    messageStat = {
-                        Text("") // hide for now
+                if (isLoading) {
+                    ThreeDotsLoading()
+                } else {
+                    ChatFlexBoxLayout(
+                        modifier = Modifier.padding(start = 2.dp, end = 4.dp),
+                        text = text,
+                        messageStat = {
+                            Text("") // hide for now
 //                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
 //                            Text(
 //                                modifier = Modifier.padding(top = 1.dp, bottom = 1.dp, end = 4.dp),
@@ -53,8 +56,9 @@ fun ReceivedMessageRow(
 //                                fontSize = 12.sp
 //                            )
 //                        }
-                    }
-                )
+                        }
+                    )
+                }
             }
         )
     }

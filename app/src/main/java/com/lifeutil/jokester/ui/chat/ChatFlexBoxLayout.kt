@@ -67,7 +67,7 @@ fun ChatFlexBoxLayout(
     onMeasure: ((ChatRowData) -> Unit)? = null
 ) {
     ChatFlexBoxLayout(
-        modifier= modifier,
+        modifier = modifier,
         text = text.text,
         color = color,
         fontSize = fontSize,
@@ -135,7 +135,7 @@ fun ChatFlexBoxLayout(
 
         MessageText(
             modifier = modifier
-                .padding(horizontal = 6.dp, vertical = 6.dp)
+                .padding(horizontal = 8.dp, vertical = 8.dp)
                 .wrapContentSize(),
             text = text,
             color = color,
