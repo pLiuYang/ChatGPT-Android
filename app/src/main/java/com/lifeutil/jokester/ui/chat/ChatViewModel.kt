@@ -1,79 +1,62 @@
 package com.lifeutil.jokester.ui.chat
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aallam.openai.api.BetaOpenAI
-import com.aallam.openai.api.chat.ChatCompletionRequest
-import com.aallam.openai.api.chat.ChatMessage
-import com.aallam.openai.api.chat.ChatRole
-import com.aallam.openai.api.model.ModelId
-import com.lifeutil.jokester.OpenAIHelper.openAI
+import com.lifeutil.jokester.DBHelper
+import com.lifeutil.jokester.data.IChatRepository
+import com.lifeutil.jokester.data.OpenAIChatRepository
 import com.lifeutil.jokester.model.UiChatMessage
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class ChatViewModel : ViewModel() {
-    val uiChatMessages = mutableStateListOf<UiChatMessage>()
+class ChatViewModel(
+    private val chatRepository: IChatRepository = OpenAIChatRepository()
+) : ViewModel() {
+
+//    private var loadingMessage: Flow<UiChatMessage> = flow {
+//        UiChatMessage(1000, "", 1, false, true)
+//    }
+    val uiChatMessages = chatRepository.getUiChatMessages()
+        .stateIn(viewModelScope, WhileSubscribed(), emptyList())
+//    var uiChatMessages = repoMessages.combine(loadingMessage) { list, loading ->
+//        list + loading
+//    }.stateIn(viewModelScope, WhileSubscribed(), emptyList())
+
+//    val chatUiState = MutableStateFlow<ChatUiState>(ChatUiState.Loading)
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
         Log.e(TAG, "Handle $exception")
     }
 
     fun addUserMessage(messageText: String) {
-        // add to list
-        uiChatMessages.add(
-            UiChatMessage(
-                (uiChatMessages.size + 1).toLong(),
-                messageText,
-                System.currentTimeMillis()
-            )
-        )
+//        if (uiChatMessages.value !is ChatUiState.Success) return
 
-        // send request
+//        val loading = UiChatMessage(1000, "", 1, false, true)
+//        uiChatMessages.value.update(loading)
+//        loadingMessage = flow { emit(loading) }
+
         viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
-            sendRequest()
+            chatRepository.addUserMessage(messageText)
+            chatRepository.sendRequest(uiChatMessages.value, messageText)
         }
     }
 
-    @OptIn(BetaOpenAI::class)
-    private suspend fun sendRequest() {
-        // add loading
-        val loading = UiChatMessage(1000, "", 1, false, true)
-        uiChatMessages.add(loading)
-
-        val completionRequest = ChatCompletionRequest(
-            model = ModelId("gpt-3.5-turbo"),
-            // avoid mapping back to ChatMessage
-            messages = uiChatMessages.map {
-                if (it.fromMe) {
-                    ChatMessage(role = ChatRole.User, content = it.message)
-                } else {
-                    ChatMessage(role = ChatRole.Assistant, content = it.message)
-                }
-            }
-        )
-        val completion = openAI.chatCompletion(completionRequest)
-        Log.i(TAG, "token usage: prompt - ${completion.usage?.promptTokens}, completion - ${completion.usage?.completionTokens}")
-        completion.choices.forEach {
-            uiChatMessages.add(UiChatMessage(1, it.message?.content ?: "", 1, false))
+    fun deleteAllMessages() {
+        viewModelScope.launch {
+            DBHelper.chatDatabase.messageDao().deleteMessages()
         }
-
-        // remove loading
-        uiChatMessages.remove(loading)
     }
 
     companion object {
         private const val TAG = "ChatViewModel"
     }
 }
-
-/**
- * UI state for chat screen
- */
-//sealed interface ChatUiState {
-//    data class Success(val messages: List<Message>) : ChatUiState
-//    object Loading : ChatUiState
-//}

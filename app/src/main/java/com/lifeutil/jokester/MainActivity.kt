@@ -8,14 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.lifeutil.jokester.ui.chat.ChatScreen
 import com.lifeutil.jokester.ui.theme.JokesterTheme
-import com.lifeutil.jokester.ui.theme.Teal
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,8 +19,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             JokesterTheme {
-                SetStatusBarColor(color = Teal)
-
                 Surface(color = MaterialTheme.colorScheme.background) {
                     Column(modifier = Modifier.fillMaxSize()) {
                         ChatScreen()
@@ -32,16 +26,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun SetStatusBarColor(color: Color) {
-    val systemUiController = rememberSystemUiController()
-    LaunchedEffect(Unit) {
-        systemUiController.setStatusBarColor(
-            color = color
-        )
     }
 }
 

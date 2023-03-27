@@ -137,7 +137,8 @@ private fun ChatTextField(
                                 Text("Message", fontSize = 18.sp)
                             }
                             innerTextField()
-                        }
+                        },
+                        maxLines = 4
                     )
                 }
 

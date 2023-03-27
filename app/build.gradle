@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -25,6 +26,13 @@ android {
             properties.load(rootProject.file("local.properties").newDataInputStream())
         }
         resValue "string", "API_TOKEN", properties.getProperty("sdk.API_TOKEN", "")
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                // For Room
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
@@ -56,7 +64,7 @@ android {
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
 
     // Compose
     implementation 'androidx.activity:activity-compose:1.6.1'
@@ -65,11 +73,9 @@ dependencies {
     implementation 'androidx.compose.material3:material3:1.1.0-alpha08'
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.navigation:navigation-compose:2.4.0-alpha10"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.1"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
-
-    // For easy updating the System UI bars colors
-    implementation 'com.google.accompanist:accompanist-systemuicontroller:0.27.0'
 
     // Retrofit
 //    implementation "com.squareup.retrofit2:retrofit:2.9.0"
@@ -79,6 +85,11 @@ dependencies {
     // define dependencies without versions
     implementation 'com.aallam.openai:openai-client'
     implementation 'io.ktor:ktor-client-okhttp'
+
+    // Room for storing location data and observing it via Flow
+    implementation "androidx.room:room-runtime:2.5.1"
+    kapt "androidx.room:room-compiler:2.5.1"
+    implementation "androidx.room:room-ktx:2.5.1"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

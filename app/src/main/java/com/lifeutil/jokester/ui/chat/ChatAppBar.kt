@@ -18,7 +18,8 @@ fun ChatAppBar(
     title: String = "Title",
     description: String = "Description",
     onClick: (() -> Unit)? = null,
-    onBack: (() -> Unit)? = null
+    onBack: (() -> Unit)? = null,
+    onEdit: (() -> Unit)? = null
 ) {
     TopAppBar(
         title = {
@@ -34,7 +35,7 @@ fun ChatAppBar(
             titleContentColor = Color.White
         ),
         actions = {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = { onEdit?.invoke() }) {
                 Icon(imageVector = Icons.Filled.Edit, contentDescription = "Edit chat", tint = Color.White)
             }
         }
