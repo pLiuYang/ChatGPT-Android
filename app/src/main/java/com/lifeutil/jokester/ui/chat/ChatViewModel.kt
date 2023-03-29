@@ -22,28 +22,14 @@ class ChatViewModel(
     private val chatRepository: IChatRepository = OpenAIChatRepository()
 ) : ViewModel() {
 
-//    private var loadingMessage: Flow<UiChatMessage> = flow {
-//        UiChatMessage(1000, "", 1, false, true)
-//    }
     val uiChatMessages = chatRepository.getUiChatMessages()
         .stateIn(viewModelScope, WhileSubscribed(), emptyList())
-//    var uiChatMessages = repoMessages.combine(loadingMessage) { list, loading ->
-//        list + loading
-//    }.stateIn(viewModelScope, WhileSubscribed(), emptyList())
-
-//    val chatUiState = MutableStateFlow<ChatUiState>(ChatUiState.Loading)
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
         Log.e(TAG, "Handle $exception")
     }
 
     fun addUserMessage(messageText: String) {
-//        if (uiChatMessages.value !is ChatUiState.Success) return
-
-//        val loading = UiChatMessage(1000, "", 1, false, true)
-//        uiChatMessages.value.update(loading)
-//        loadingMessage = flow { emit(loading) }
-
         viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
             chatRepository.addUserMessage(messageText)
             chatRepository.sendRequest(uiChatMessages.value, messageText)

@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.lifeutil.jokester.ui.theme.Grey10
 import com.lifeutil.jokester.ui.theme.JokesterTheme
 import com.lifeutil.jokester.ui.theme.Teal
 
@@ -23,20 +24,20 @@ fun ChatAppBar(
 ) {
     TopAppBar(
         title = {
-            Text(text = title)
+            Text(text = title, color = Color.Black)
         },
         navigationIcon = {
             IconButton(onClick = { onBack?.invoke() }) {
-                Icon(Icons.Filled.ArrowBack, "backIcon", tint = Color.White)
+                Icon(Icons.Filled.ArrowBack, "backIcon", tint = Color.Black)
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Teal,
+            containerColor = Color.Transparent,
             titleContentColor = Color.White
         ),
         actions = {
             IconButton(onClick = { onEdit?.invoke() }) {
-                Icon(imageVector = Icons.Filled.Edit, contentDescription = "Edit chat", tint = Color.White)
+                Icon(imageVector = Icons.Filled.Edit, contentDescription = "Edit chat", tint = Color.Black)
             }
         }
     )

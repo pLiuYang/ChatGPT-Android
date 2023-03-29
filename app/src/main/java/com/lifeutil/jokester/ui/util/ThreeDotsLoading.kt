@@ -22,12 +22,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.lifeutil.jokester.ui.theme.Teal
+import com.lifeutil.jokester.ui.theme.AiGreen
 import kotlinx.coroutines.delay
 
 @Composable
 fun ThreeDotsLoading(
-    circleColor: Color = Teal,
+    circleColor: Color = AiGreen,
     circleSize: Dp = 8.dp,
     animationDelay: Int = 400,
     initialAlpha: Float = 0.3f
@@ -67,7 +67,7 @@ fun ThreeDotsLoading(
 
     // container for circles
     Row(
-        modifier = Modifier.padding(horizontal = 6.dp, vertical = 6.dp)
+        modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp)
         //.border(width = 2.dp, color = Color.Magenta)
     ) {
 

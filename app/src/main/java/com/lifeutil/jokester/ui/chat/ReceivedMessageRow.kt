@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.lifeutil.jokester.ui.theme.AiGreen
 import com.lifeutil.jokester.ui.util.SubcomposeColumn
 import com.lifeutil.jokester.ui.util.ThreeDotsLoading
 
@@ -30,23 +31,29 @@ fun ReceivedMessageRow(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(start = 8.dp, end = 60.dp, top = 2.dp, bottom = 2.dp)
+            .padding(start = 8.dp, end = 60.dp, top = 6.dp, bottom = 6.dp)
 
     ) {
         // This is chat bubble
+        val roundedCornerShape = RoundedCornerShape(1.dp, 12.dp, 12.dp, 12.dp)
         SubcomposeColumn(
             modifier = Modifier
-                .shadow(1.dp, RoundedCornerShape(8.dp))
-                .clip(RoundedCornerShape(8.dp))
-                .background(Color.White)
+                .shadow(
+                    8.dp, roundedCornerShape,
+                    ambientColor = Color.LightGray,
+                    spotColor = Color.LightGray
+                )
+                .clip(roundedCornerShape)
+                .background(AiGreen)
                 .clickable { },
             content = {
                 if (isLoading) {
-                    ThreeDotsLoading()
+                    ThreeDotsLoading(Color.White)
                 } else {
                     ChatFlexBoxLayout(
                         modifier = Modifier.padding(start = 2.dp, end = 4.dp),
                         text = text,
+                        color = Color.White,
                         messageStat = {
                             Text("") // hide for now
 //                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {

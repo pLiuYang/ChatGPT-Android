@@ -16,7 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.lifeutil.jokester.ui.theme.AiGreen
 import com.lifeutil.jokester.ui.theme.SentMessageColor
 import com.lifeutil.jokester.ui.util.SubcomposeColumn
 
@@ -35,14 +37,15 @@ fun SentMessageRow(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(start = 60.dp, end = 8.dp, top = 2.dp, bottom = 2.dp)
+            .padding(start = 60.dp, end = 8.dp, top = 6.dp, bottom = 6.dp)
     ) {
         // This is chat bubble
+        val roundedCornerShape = RoundedCornerShape(12.dp, 1.dp, 12.dp, 12.dp)
         SubcomposeColumn(
             modifier = Modifier
-                .shadow(1.dp, RoundedCornerShape(8.dp))
-                .clip(RoundedCornerShape(8.dp))
-                .background(SentMessageColor)
+                .shadow(8.dp, roundedCornerShape, ambientColor = AiGreen, spotColor = Color.LightGray)
+                .clip(roundedCornerShape)
+                .background(Color.White)
                 .clickable { },
 
             content = {

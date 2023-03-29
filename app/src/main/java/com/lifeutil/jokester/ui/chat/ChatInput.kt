@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lifeutil.jokester.ui.theme.AiGreen
 import com.lifeutil.jokester.ui.theme.Teal
 import com.lifeutil.jokester.ui.util.IndicatingIconButton
 
@@ -69,7 +70,7 @@ internal fun ChatInput(modifier: Modifier = Modifier, onMessageChange: (String) 
         FloatingActionButton(
             modifier = Modifier.size(48.dp),
             shape = RoundedCornerShape(24.dp),
-            containerColor = if (textEmpty.value) Color.Gray else Teal,
+            containerColor = if (textEmpty.value) Color.Gray else AiGreen,
             onClick = {
                 if (!textEmpty.value) {
                     onMessageChange(input.text.trim())
@@ -97,7 +98,7 @@ private fun ChatTextField(
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(24.dp),
-        color = MaterialTheme.colorScheme.surface,
+        color = Color(0xFFf6f6f6),
         tonalElevation = 1.dp
     ) {
         Row(
@@ -131,7 +132,7 @@ private fun ChatTextField(
                         ),
                         value = input,
                         onValueChange = onValueChange,
-                        cursorBrush = SolidColor(Color(0xff00897B)),
+                        cursorBrush = SolidColor(AiGreen),
                         decorationBox = { innerTextField ->
                             if (empty) {
                                 Text("Message", fontSize = 18.sp)

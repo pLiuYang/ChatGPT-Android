@@ -1,5 +1,6 @@
 package com.lifeutil.jokester.ui.chat
 
+import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -10,12 +11,16 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,7 +30,9 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun ChatScreen() {
+fun ChatScreen(
+    onBack: (() -> Unit)? = null
+) {
     val chatViewModel: ChatViewModel = viewModel()
 
     val messages by chatViewModel.uiChatMessages.collectAsStateWithLifecycle()
@@ -35,12 +42,17 @@ fun ChatScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xffFBE9E7))
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color(0xFFf8f8f8), Color(0xFFfdfdfd))
+                )
+            )
     ) {
         val scrollState = rememberLazyListState()
 
         ChatAppBar(
             title = "小助手",
+            onBack = onBack,
             onEdit = { chatViewModel.deleteAllMessages() }
         )
 
