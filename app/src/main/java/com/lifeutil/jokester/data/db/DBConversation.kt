@@ -4,11 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "message_table")
-data class DBMessage(
+@Entity(tableName = "conversation_table")
+data class DBConversation(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long = 0,
-    @ColumnInfo(name = "conversation_id") val conversationId: Long,
-    @ColumnInfo(name = "message") val message: String,
+    @ColumnInfo(name = "topic") val topic: String, // title/name of the conversation
+    @ColumnInfo(name = "context") val context: String, // to be changed to types
     @ColumnInfo(name = "last_updated") val lastUpdated: Long,
-    @ColumnInfo(name = "fromMe") val fromMe: Boolean,
 )

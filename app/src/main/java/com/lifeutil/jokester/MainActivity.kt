@@ -8,6 +8,8 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -31,11 +33,16 @@ class MainActivity : ComponentActivity() {
                         Route.ChatList.route,
                     ) {
                         ChatListScreen(
-                            onNavigateToChat = { navController.navigate(Route.Chat.route) }
+                            onNavigateToChat = { id ->
+                                navController.navigate(Route.Chat.createRoute(id))
+                            }
                         )
                     }
                     composable(
                         Route.Chat.route,
+                        arguments = listOf(navArgument("conversationId") {
+                            type = NavType.LongType
+                        }),
                         enterTransition = {
                             slideIntoContainer(SlideDirection.Left, animationSpec = tween(700))
                         },
@@ -48,8 +55,14 @@ class MainActivity : ComponentActivity() {
                         popExitTransition = {
                             slideOutOfContainer(SlideDirection.Right, animationSpec = tween(700))
                         }
-                    ) {
-                        ChatScreen(onBack = { navController.popBackStack() })
+                    ) { navBackStackEntry ->
+                        /* Extracting the id from the route */
+                        val conversationId = navBackStackEntry.arguments?.getLong("conversationId")
+                        /* We check if is null */
+                        requireNotNull(conversationId) { "conversationId parameter wasn't found. Please make sure it's set!" }
+                        ChatScreen(
+                            conversationId = conversationId,
+                            onBack = { navController.popBackStack() })
                     }
                 }
             }

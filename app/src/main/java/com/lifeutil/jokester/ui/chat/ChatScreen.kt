@@ -1,7 +1,5 @@
 package com.lifeutil.jokester.ui.chat
 
-import android.app.Activity
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,7 +9,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,21 +16,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lifeutil.jokester.model.ChatUiState
 import com.lifeutil.jokester.model.UiChatMessage
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
 fun ChatScreen(
+    conversationId: Long,
     onBack: (() -> Unit)? = null
 ) {
-    val chatViewModel: ChatViewModel = viewModel()
+    val chatViewModel: ChatViewModel = viewModel(factory = ChatViewModelFactory(conversationId))
 
     val messages by chatViewModel.uiChatMessages.collectAsStateWithLifecycle()
     val sdf = remember { SimpleDateFormat("hh:mm a", Locale.ROOT) }

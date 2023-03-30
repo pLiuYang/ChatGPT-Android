@@ -2,24 +2,20 @@ package com.lifeutil.jokester.ui.chat
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lifeutil.jokester.DBHelper
 import com.lifeutil.jokester.data.IChatRepository
 import com.lifeutil.jokester.data.OpenAIChatRepository
-import com.lifeutil.jokester.model.UiChatMessage
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ChatViewModel(
-    private val chatRepository: IChatRepository = OpenAIChatRepository()
+    private val conversationId: Long,
+    private val chatRepository: IChatRepository = OpenAIChatRepository(conversationId)
 ) : ViewModel() {
 
     val uiChatMessages = chatRepository.getUiChatMessages()
@@ -44,5 +40,15 @@ class ChatViewModel(
 
     companion object {
         private const val TAG = "ChatViewModel"
+    }
+}
+
+@Suppress("unchecked_cast")
+class ChatViewModelFactory(
+    private val conversationId: Long
+) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return ChatViewModel(conversationId) as T
     }
 }

@@ -8,21 +8,21 @@ import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.model.ModelId
 import com.lifeutil.jokester.DBHelper
 import com.lifeutil.jokester.OpenAIHelper
-import com.lifeutil.jokester.data.db.ChatDao
+import com.lifeutil.jokester.data.db.MessageDao
 import com.lifeutil.jokester.data.db.DBMessage
 import com.lifeutil.jokester.model.UiChatMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.concurrent.atomic.AtomicInteger
 
-class OpenAIChatRepository : IChatRepository {
+class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
 
-    private val chatDao: ChatDao by lazy { DBHelper.chatDatabase.messageDao() }
+    private val messageDao: MessageDao by lazy { DBHelper.chatDatabase.messageDao() }
     private val modelId by lazy { ModelId(GPT_3_5_TURBO) }
     private val requestCount: AtomicInteger = AtomicInteger(0)
     private val loadingFakeMsg = UiChatMessage(1000, "", 1, false, true)
 
-    private val uiChatMessages: Flow<List<UiChatMessage>> = chatDao.getMessages().map { dbList ->
+    private val uiChatMessages: Flow<List<UiChatMessage>> = messageDao.getMessages(conversationId).map { dbList ->
         dbListToUiModel(dbList)
     }
 
@@ -30,10 +30,11 @@ class OpenAIChatRepository : IChatRepository {
 
     override suspend fun addUserMessage(messageText: String) {
         // add into Database
-        chatDao.insertMessage(
+        messageDao.insertMessage(
             DBMessage(
+                conversationId = conversationId,
                 message = messageText,
-                date = System.currentTimeMillis(),
+                lastUpdated = System.currentTimeMillis(),
                 fromMe = true
             )
         )
@@ -54,10 +55,11 @@ class OpenAIChatRepository : IChatRepository {
             "token usage: prompt - ${completion.usage?.promptTokens}, completion - ${completion.usage?.completionTokens}"
         )
         completion.choices.forEach {
-            chatDao.insertMessage(
+            messageDao.insertMessage(
                 DBMessage(
+                    conversationId = conversationId,
                     message = it.message?.content ?: "",
-                    date = System.currentTimeMillis(),
+                    lastUpdated = System.currentTimeMillis(),
                     fromMe = false
                 )
             )
@@ -86,7 +88,7 @@ class OpenAIChatRepository : IChatRepository {
                 UiChatMessage(
                     dbMessage.id,
                     dbMessage.message,
-                    dbMessage.date,
+                    dbMessage.lastUpdated,
                     dbMessage.fromMe
                 )
             )

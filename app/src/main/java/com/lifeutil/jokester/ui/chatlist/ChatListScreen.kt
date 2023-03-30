@@ -3,7 +3,6 @@ package com.lifeutil.jokester.ui.chatlist
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,8 +15,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.SupportAgent
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,23 +32,35 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ChatListScreen(
-    onNavigateToChat: (Int) -> Unit
+    onNavigateToChat: (Long) -> Unit
 ) {
-    val chats = listOf(1, 2, 3)
+    val chats = listOf(1L, 2L, 3L)
     val scrollState = rememberLazyListState()
 
-    Column(
+    Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(Color(0xFFf8f8f8), Color(0xFFfdfdfd))
                 )
-            )
-    ) {
+            ),
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {},
+                containerColor = Color(0xffFFA000)
+            ) {
+                Icon(
+                    Icons.Filled.Add, tint = Color.White,
+                    contentDescription = null
+                )
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center,
+    ) { contentPadding ->
         LazyColumn(
             modifier = Modifier
-                .weight(1f)
+                .padding(contentPadding)
                 .fillMaxWidth(),
             state = scrollState,
             contentPadding = PaddingValues(12.dp)

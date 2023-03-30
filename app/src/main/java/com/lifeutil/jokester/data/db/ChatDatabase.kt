@@ -7,10 +7,12 @@ import androidx.room.RoomDatabase
 
 private const val DB_NAME = "chat_database"
 
-@Database(entities = [(DBMessage::class)], version = 1)
+@Database(entities = [DBMessage::class, DBConversation::class], version = 2)
 abstract class ChatDatabase : RoomDatabase() {
 
-    abstract fun messageDao(): ChatDao
+    abstract fun messageDao(): MessageDao
+
+    abstract fun conversationDao(): ConversationDao
 
     companion object {
         fun create(context: Context): ChatDatabase =

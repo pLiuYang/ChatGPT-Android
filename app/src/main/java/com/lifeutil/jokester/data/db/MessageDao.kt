@@ -7,7 +7,7 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface ChatDao {
+interface MessageDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMessage(message: DBMessage)
@@ -15,6 +15,6 @@ interface ChatDao {
     @Query("DELETE FROM message_table")
     suspend fun deleteMessages()
 
-    @Query("SELECT * FROM message_table ORDER BY date")
-    fun getMessages(): Flow<List<DBMessage>>
+    @Query("SELECT * FROM message_table WHERE conversation_id=:conversationId ORDER BY last_updated")
+    fun getMessages(conversationId: Long): Flow<List<DBMessage>>
 }
