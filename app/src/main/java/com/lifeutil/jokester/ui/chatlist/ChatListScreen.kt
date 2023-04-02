@@ -1,9 +1,9 @@
 package com.lifeutil.jokester.ui.chatlist
 
-import androidx.compose.foundation.Image
+import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,25 +16,42 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.SupportAgent
-import androidx.compose.material3.FabPosition
+import androidx.compose.material.icons.filled.Savings
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.DismissValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lifeutil.jokester.model.UiConversation
+import com.lifeutil.jokester.ui.theme.AiGreen
+import com.lifeutil.jokester.ui.theme.TealDeer
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ChatListScreen(
     onNavigateToChat: (Long) -> Unit
 ) {
-    val chats = listOf(1L, 2L, 3L)
+    val chatListViewModel: ChatListViewModel = viewModel()
+    val conversations by chatListViewModel.uiConversations.collectAsStateWithLifecycle()
     val scrollState = rememberLazyListState()
 
     Scaffold(
@@ -45,18 +62,11 @@ fun ChatListScreen(
                     colors = listOf(Color(0xFFf8f8f8), Color(0xFFfdfdfd))
                 )
             ),
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {},
-                containerColor = Color(0xffFFA000)
-            ) {
-                Icon(
-                    Icons.Filled.Add, tint = Color.White,
-                    contentDescription = null
-                )
-            }
-        },
-        floatingActionButtonPosition = FabPosition.Center,
+        bottomBar = {
+            BottomAppBarComponent(createConvo = {
+                chatListViewModel.createConvo()
+            })
+        }
     ) { contentPadding ->
         LazyColumn(
             modifier = Modifier
@@ -65,32 +75,92 @@ fun ChatListScreen(
             state = scrollState,
             contentPadding = PaddingValues(12.dp)
         ) {
-            items(chats) {
-                Row(
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFFf0f0f0))
-                        .clickable { onNavigateToChat.invoke(it) },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        imageVector = Icons.Filled.SupportAgent,
-                        contentDescription = "icon",
-                        modifier = Modifier
-                            .padding(12.dp)
-                            .size(36.dp),
-                        alpha = 0.6f
-                    )
+            items(conversations, key = { convo: UiConversation -> convo.id }) { conversation ->
+                val currentItem by rememberUpdatedState(newValue = conversation)
+                val dismissState = rememberDismissState(
+                    confirmValueChange = {
+                        if (it == DismissValue.DismissedToStart) {
+                            println("confirmValueChange $it")
+                            chatListViewModel.deleteConvo(currentItem.id)
+                            true
+                        } else {
+                            false
+                        }
+                    },
+                    positionalThreshold = { totalDistance -> totalDistance * 0.3f } // 30% of the total width
+                )
+                SwipeToDismiss(
+                    state = dismissState,
+                    modifier = Modifier.animateItemPlacement(),
+                    background = { ConversationSwipeBackground() },
+                    directions = setOf(DismissDirection.EndToStart),
+                    dismissContent = {
+                        ConversationRow(
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(Color(0xFFf0f0f0))
+                                .clickable { onNavigateToChat.invoke(conversation.id) },
+                            conversation = conversation
+                        )
+                    })
 
-                    Text(
-                        text = "Chat bot $it",
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 12.dp)
-                    )
-                }
             }
         }
     }
+}
+
+// testing
+@Composable
+private fun BottomAppBarComponent(createConvo: (() -> Unit)? = null) {
+    BottomAppBar(
+        containerColor = TealDeer,
+        contentColor = Color.Gray,
+        tonalElevation = 4.dp,
+        actions = {
+            val context = LocalContext.current
+            Row(
+                modifier = Modifier
+                    .padding(12.dp)
+                    .clickable {
+                        Toast
+                            .makeText(
+                                context,
+                                "Tips to your AI assistant. Free daily top up.",
+                                Toast.LENGTH_SHORT
+                            )
+                            .show()
+                    },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    Icons.Filled.Savings,
+                    contentDescription = "",
+                    modifier = Modifier.size(36.dp),
+                    tint = Color(0xFFffcc33)
+                )
+                Text(text = "10 coins")
+            }
+            IconButton(onClick = { /* Settings onClick */ }) {
+                Icon(
+                    Icons.Filled.Settings,
+                    contentDescription = "",
+                    modifier = Modifier.size(36.dp),
+                    tint = Color.LightGray
+                )
+            }
+        },
+        modifier = Modifier.clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp)),
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { createConvo?.invoke() },
+                containerColor = AiGreen
+            ) {
+                Icon(
+                    Icons.Filled.Add, tint = Color.White,
+                    contentDescription = null
+                )
+            }
+        }
+    )
 }

@@ -65,12 +65,12 @@ fun ChatScreen(
                 if (message.fromMe) {
                     SentMessageRow(
                         text = message.message,
-                        messageTime = sdf.format(message.date)
+                        messageTime = sdf.format(message.lastUpdated)
                     )
                 } else {
                     ReceivedMessageRow(
                         text = message.message,
-                        messageTime = sdf.format(message.date),
+                        messageTime = sdf.format(message.lastUpdated),
                         isLoading = message.isLoading
                     )
                 }

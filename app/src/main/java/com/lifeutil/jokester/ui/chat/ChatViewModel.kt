@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.lifeutil.jokester.DBHelper
 import com.lifeutil.jokester.data.IChatRepository
 import com.lifeutil.jokester.data.OpenAIChatRepository
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -34,7 +33,7 @@ class ChatViewModel(
 
     fun deleteAllMessages() {
         viewModelScope.launch {
-            DBHelper.chatDatabase.messageDao().deleteMessages()
+            chatRepository.deleteMessages(conversationId)
         }
     }
 

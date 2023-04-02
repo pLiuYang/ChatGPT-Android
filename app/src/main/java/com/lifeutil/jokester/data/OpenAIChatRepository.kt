@@ -69,6 +69,10 @@ class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
         requestCount.decrementAndGet()
     }
 
+    override suspend fun deleteMessages(convoId: Long) {
+        messageDao.deleteMessages(convoId)
+    }
+
     @OptIn(BetaOpenAI::class)
     private fun getHistoryMessages(
         previousMessages: List<UiChatMessage>,

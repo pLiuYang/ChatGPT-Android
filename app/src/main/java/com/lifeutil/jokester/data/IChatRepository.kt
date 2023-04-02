@@ -9,5 +9,10 @@ interface IChatRepository {
 
     suspend fun sendRequest(previousMessages: List<UiChatMessage>, newMessage: String)
 
+    /**
+     * Delete messages in this conversation
+     */
+    suspend fun deleteMessages(convoId: Long)
+
     fun getUiChatMessages(): Flow<List<UiChatMessage>>
 }

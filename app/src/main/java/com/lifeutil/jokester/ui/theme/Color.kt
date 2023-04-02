@@ -10,7 +10,7 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
-val TealDeer = Color(0xFF99e6b3)
+val TealDeer = Color(0x5599e6b3)
 val Teal = Color(0xFF008080)
 
 val AiGreen = Color(0xFF74aa9c)

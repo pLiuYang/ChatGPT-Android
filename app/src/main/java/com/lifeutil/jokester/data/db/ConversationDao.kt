@@ -10,10 +10,13 @@ import kotlinx.coroutines.flow.Flow
 interface ConversationDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertConversation(message: DBConversation)
+    suspend fun insertConversation(message: DBConversation): Long
 
-//    @Query("DELETE FROM message_table")
-//    suspend fun deleteMessages()
+    /**
+     * Delete single conversation with id
+     */
+    @Query("DELETE FROM conversation_table WHERE id=:conversationId")
+    suspend fun deleteConversation(conversationId: Long)
 
     @Query("SELECT * FROM conversation_table ORDER BY last_updated")
     fun getConversations(): Flow<List<DBConversation>>
