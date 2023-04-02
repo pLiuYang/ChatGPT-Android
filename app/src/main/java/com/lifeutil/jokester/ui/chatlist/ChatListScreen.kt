@@ -41,7 +41,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.lifeutil.jokester.model.UiConversation
 import com.lifeutil.jokester.ui.theme.AiGreen
 import com.lifeutil.jokester.ui.theme.TealDeer
 
@@ -75,7 +74,7 @@ fun ChatListScreen(
             state = scrollState,
             contentPadding = PaddingValues(12.dp)
         ) {
-            items(conversations, key = { convo: UiConversation -> convo.id }) { conversation ->
+            items(conversations, key = { it.id }) { conversation ->
                 val currentItem by rememberUpdatedState(newValue = conversation)
                 val dismissState = rememberDismissState(
                     confirmValueChange = {

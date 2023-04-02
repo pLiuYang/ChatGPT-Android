@@ -3,12 +3,9 @@ package com.lifeutil.jokester.ui.chat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,7 +16,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.lifeutil.jokester.ui.theme.AiGreen
-import com.lifeutil.jokester.ui.theme.SentMessageColor
 import com.lifeutil.jokester.ui.util.SubcomposeColumn
 
 /**
@@ -29,12 +25,13 @@ import com.lifeutil.jokester.ui.util.SubcomposeColumn
 fun SentMessageRow(
     text: String,
     messageTime: String,
-    messageStatus: MessageStatus = MessageStatus.READ
+    messageStatus: MessageStatus = MessageStatus.READ,
+    modifier: Modifier
 ) {
     // Whole column that contains chat bubble and padding on start or end
     Column(
         horizontalAlignment = Alignment.End,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(start = 60.dp, end = 8.dp, top = 6.dp, bottom = 6.dp)
@@ -43,7 +40,12 @@ fun SentMessageRow(
         val roundedCornerShape = RoundedCornerShape(12.dp, 1.dp, 12.dp, 12.dp)
         SubcomposeColumn(
             modifier = Modifier
-                .shadow(8.dp, roundedCornerShape, ambientColor = AiGreen, spotColor = Color.LightGray)
+                .shadow(
+                    8.dp,
+                    roundedCornerShape,
+                    ambientColor = AiGreen,
+                    spotColor = Color.LightGray
+                )
                 .clip(roundedCornerShape)
                 .background(Color.White)
                 .clickable { },

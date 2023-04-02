@@ -23,7 +23,8 @@ import com.lifeutil.jokester.ui.util.ThreeDotsLoading
 fun ReceivedMessageRow(
     text: String,
     messageTime: String,
-    isLoading: Boolean = false
+    isLoading: Boolean = false,
+    modifier: Modifier
 ) {
     // Whole column that contains chat bubble and padding on start or end
     Column(
@@ -37,7 +38,7 @@ fun ReceivedMessageRow(
         // This is chat bubble
         val roundedCornerShape = RoundedCornerShape(1.dp, 12.dp, 12.dp, 12.dp)
         SubcomposeColumn(
-            modifier = Modifier
+            modifier = modifier
                 .shadow(
                     8.dp, roundedCornerShape,
                     ambientColor = Color.LightGray,

@@ -1,5 +1,6 @@
 package com.lifeutil.jokester.ui.chat
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,6 +24,7 @@ import com.lifeutil.jokester.model.UiChatMessage
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChatScreen(
     conversationId: Long,
@@ -48,7 +50,8 @@ fun ChatScreen(
         ChatAppBar(
             title = "小助手",
             onBack = onBack,
-            onEdit = { chatViewModel.deleteAllMessages() }
+            onEdit = { /* TODO */ },
+            onClearChat = { chatViewModel.deleteAllMessages() }
         )
 
 //        when (chatUiState) {
@@ -61,17 +64,19 @@ fun ChatScreen(
             state = scrollState,
             contentPadding = PaddingValues(top = 8.dp, bottom = 8.dp)
         ) {
-            items(messages) { message: UiChatMessage ->
+            items(messages, key = { it.id }) { message: UiChatMessage ->
                 if (message.fromMe) {
                     SentMessageRow(
                         text = message.message,
-                        messageTime = sdf.format(message.lastUpdated)
+                        messageTime = sdf.format(message.lastUpdated),
+                        modifier = Modifier.animateItemPlacement()
                     )
                 } else {
                     ReceivedMessageRow(
                         text = message.message,
                         messageTime = sdf.format(message.lastUpdated),
-                        isLoading = message.isLoading
+                        isLoading = message.isLoading,
+                        modifier = Modifier.animateItemPlacement()
                     )
                 }
             }
