@@ -15,4 +15,6 @@ interface IChatRepository {
     suspend fun deleteMessages(convoId: Long)
 
     fun getUiChatMessages(): Flow<List<UiChatMessage>>
+
+    fun getChatTopic(): Flow<String>
 }

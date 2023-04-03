@@ -19,6 +19,7 @@ class ChatViewModel(
 
     val uiChatMessages = chatRepository.getUiChatMessages()
         .stateIn(viewModelScope, WhileSubscribed(), emptyList())
+    val chatTopic = chatRepository.getChatTopic().stateIn(viewModelScope, WhileSubscribed(), "")
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
         Log.e(TAG, "Handle $exception")

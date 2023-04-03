@@ -33,6 +33,7 @@ fun ChatScreen(
     val chatViewModel: ChatViewModel = viewModel(factory = ChatViewModelFactory(conversationId))
 
     val messages by chatViewModel.uiChatMessages.collectAsStateWithLifecycle()
+    val topic by chatViewModel.chatTopic.collectAsStateWithLifecycle()
     val sdf = remember { SimpleDateFormat("hh:mm a", Locale.ROOT) }
 //    val context = LocalContext.current
 
@@ -48,7 +49,7 @@ fun ChatScreen(
         val scrollState = rememberLazyListState()
 
         ChatAppBar(
-            title = "小助手",
+            title = topic,
             onBack = onBack,
             onEdit = { /* TODO */ },
             onClearChat = { chatViewModel.deleteAllMessages() }

@@ -20,4 +20,7 @@ interface ConversationDao {
 
     @Query("SELECT * FROM conversation_table ORDER BY last_updated DESC")
     fun getConversations(): Flow<List<DBConversation>>
+
+    @Query("SELECT * FROM conversation_table WHERE id=:conversationId")
+    fun getConversation(conversationId: Long): Flow<DBConversation>
 }

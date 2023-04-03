@@ -8,8 +8,8 @@ import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.model.ModelId
 import com.lifeutil.jokester.DBHelper
 import com.lifeutil.jokester.OpenAIHelper
-import com.lifeutil.jokester.data.db.MessageDao
 import com.lifeutil.jokester.data.db.DBMessage
+import com.lifeutil.jokester.data.db.MessageDao
 import com.lifeutil.jokester.model.UiChatMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -18,15 +18,21 @@ import java.util.concurrent.atomic.AtomicInteger
 class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
 
     private val messageDao: MessageDao by lazy { DBHelper.chatDatabase.messageDao() }
+    private val conversationDao by lazy { DBHelper.chatDatabase.conversationDao() }
     private val modelId by lazy { ModelId(GPT_3_5_TURBO) }
     private val requestCount: AtomicInteger = AtomicInteger(0)
     private val loadingFakeMsg = UiChatMessage(1000, "", 1, false, true)
 
-    private val uiChatMessages: Flow<List<UiChatMessage>> = messageDao.getMessages(conversationId).map { dbList ->
-        dbListToUiModel(dbList)
-    }
+    private val uiChatMessages: Flow<List<UiChatMessage>> =
+        messageDao.getMessages(conversationId).map { dbList ->
+            dbListToUiModel(dbList)
+        }
+
+    private val chatTopic: Flow<String> =
+        conversationDao.getConversation(conversationId).map { it.topic }
 
     override fun getUiChatMessages(): Flow<List<UiChatMessage>> = uiChatMessages
+    override fun getChatTopic(): Flow<String> = chatTopic
 
     override suspend fun addUserMessage(messageText: String) {
         // add into Database

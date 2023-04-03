@@ -55,13 +55,7 @@ fun ChatListScreen(
     val scrollState = rememberLazyListState()
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFFf8f8f8), Color(0xFFfdfdfd))
-                )
-            ),
+        modifier = Modifier.fillMaxSize(),
         bottomBar = {
             BottomAppBarComponent(createConvo = {
                 chatListViewModel.createConvo()
@@ -71,7 +65,12 @@ fun ChatListScreen(
         LazyColumn(
             modifier = Modifier
                 .padding(contentPadding)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color(0xFFf8f8f8), Color(0xFFfdfdfd))
+                    )
+                ),
             state = scrollState,
             contentPadding = PaddingValues(12.dp)
         ) {
