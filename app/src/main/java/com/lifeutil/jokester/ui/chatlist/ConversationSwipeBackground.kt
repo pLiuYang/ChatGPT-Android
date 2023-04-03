@@ -20,7 +20,7 @@ fun ConversationSwipeBackground() {
     Box(
         Modifier
             .fillMaxSize()
-            .padding(4.dp)
+            .padding(6.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(Color.Red),
         contentAlignment = Alignment.CenterEnd
@@ -29,7 +29,7 @@ fun ConversationSwipeBackground() {
             Icons.Filled.Delete,
             contentDescription = "",
             modifier = Modifier.padding(end = 12.dp),
-            tint = Color.LightGray
+            tint = Color.White
         )
     }
 }

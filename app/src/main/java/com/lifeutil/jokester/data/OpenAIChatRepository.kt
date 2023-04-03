@@ -106,5 +106,6 @@ class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
     companion object {
         private const val TAG = "OpenAIChatRepository"
         private const val GPT_3_5_TURBO = "gpt-3.5-turbo"
+//        private const val DAVINCI_003 = "text-davinci-003"
     }
 }

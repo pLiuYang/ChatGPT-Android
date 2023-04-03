@@ -4,5 +4,5 @@ data class UiConversation(
     val id: Long,
     val topic: String,
     val lastMessage: String,
-    val lastUpdated: Long
+    val lastUpdated: CharSequence
 )

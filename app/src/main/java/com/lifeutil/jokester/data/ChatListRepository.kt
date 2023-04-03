@@ -1,5 +1,6 @@
 package com.lifeutil.jokester.data
 
+import android.text.format.DateUtils
 import android.util.Log
 import com.lifeutil.jokester.DBHelper
 import com.lifeutil.jokester.data.db.ConversationDao
@@ -12,12 +13,15 @@ class ChatListRepository {
 
     private val convoDao: ConversationDao by lazy { DBHelper.chatDatabase.conversationDao() }
 
+    // TODO refresh timestamp every minute
     private val uiConversations: Flow<List<UiConversation>> =
         convoDao.getConversations().map { dbList ->
             Log.d(TAG, "DB convo updated, size ${dbList.size}")
+            val now = System.currentTimeMillis()
+
             dbList.map {
                 // todo last message
-                UiConversation(it.id, it.topic, "", it.lastUpdated)
+                UiConversation(it.id, it.topic, "", getRelativeDateTime(now, it.lastUpdated))
             }
         }
 
@@ -36,6 +40,20 @@ class ChatListRepository {
     }
 
     fun getUiConversations(): Flow<List<UiConversation>> = uiConversations
+
+    private fun getRelativeDateTime(now: Long, lastUpdated: Long): CharSequence {
+        val timeDiff = now - lastUpdated
+        return if (timeDiff <= DateUtils.MINUTE_IN_MILLIS) {
+            "just now"
+        } else {
+            DateUtils.getRelativeTimeSpanString(
+                lastUpdated,
+                now,
+                DateUtils.MINUTE_IN_MILLIS,
+                DateUtils.FORMAT_ABBREV_RELATIVE
+            )
+        }
+    }
 
     companion object {
         private const val TAG = "ChatListRepository"

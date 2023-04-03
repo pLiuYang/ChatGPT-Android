@@ -1,5 +1,6 @@
 package com.lifeutil.jokester.ui.chatlist
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -74,6 +75,7 @@ fun ChatListScreen(
             state = scrollState,
             contentPadding = PaddingValues(12.dp)
         ) {
+            Log.d("ChatListScreen", "recompose LazyColumn, size: ${conversations.size}")
             items(conversations, key = { it.id }) { conversation ->
                 val currentItem by rememberUpdatedState(newValue = conversation)
                 val dismissState = rememberDismissState(
@@ -96,7 +98,7 @@ fun ChatListScreen(
                     dismissContent = {
                         ConversationRow(
                             modifier = Modifier
-                                .padding(4.dp)
+                                .padding(5.dp)
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(Color(0xFFf0f0f0))
                                 .clickable { onNavigateToChat.invoke(conversation.id) },

@@ -18,6 +18,6 @@ interface ConversationDao {
     @Query("DELETE FROM conversation_table WHERE id=:conversationId")
     suspend fun deleteConversation(conversationId: Long)
 
-    @Query("SELECT * FROM conversation_table ORDER BY last_updated")
+    @Query("SELECT * FROM conversation_table ORDER BY last_updated DESC")
     fun getConversations(): Flow<List<DBConversation>>
 }

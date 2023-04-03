@@ -3,6 +3,7 @@ package com.lifeutil.jokester.ui.chatlist
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -12,13 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.lifeutil.jokester.model.UiConversation
 
 @Composable
 fun ConversationRow(modifier: Modifier, conversation: UiConversation) {
     Row(
-        modifier = modifier,
+        modifier = modifier.padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
@@ -35,13 +38,31 @@ fun ConversationRow(modifier: Modifier, conversation: UiConversation) {
                 .weight(1f)
                 .padding(end = 12.dp)
         ) {
-            Text(
-                text = "Chat bot ${conversation.id}",
-            )
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "${conversation.topic} ${conversation.id}",
+                    fontSize = 20.sp,
+                    modifier = Modifier.weight(1f).padding(end = 8.dp)
+                )
+                Text(
+                    text = "${conversation.lastUpdated}",
+                    color = Color.LightGray
+                )
+            }
+
             Text(
                 text = conversation.topic,
                 color = Color.LightGray
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PreviewConversationRow() {
+    ConversationRow(
+        modifier = Modifier.fillMaxWidth(),
+        conversation = UiConversation(1, "translator", "last message", "today")
+    )
 }
