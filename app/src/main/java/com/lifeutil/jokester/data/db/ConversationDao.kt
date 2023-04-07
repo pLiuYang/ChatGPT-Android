@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -23,4 +24,7 @@ interface ConversationDao {
 
     @Query("SELECT * FROM conversation_table WHERE id=:conversationId")
     fun getConversation(conversationId: Long): Flow<DBConversation>
+
+    @Query("Update conversation_table SET last_message=:messageText, last_updated=:lastUpdated WHERE id=:conversationId")
+    fun updateConversationLastMessage(conversationId: Long, messageText: String, lastUpdated: Long)
 }

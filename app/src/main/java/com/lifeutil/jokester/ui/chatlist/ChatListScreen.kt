@@ -31,7 +31,10 @@ import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,20 +45,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lifeutil.jokester.ui.chatlist.ConversationConstants.NO_CONVERSATION_CREATED
 import com.lifeutil.jokester.ui.theme.AiGreen
 import com.lifeutil.jokester.ui.theme.TealDeer
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ChatListScreen(
-    onNavigateToChat: (Long) -> Unit
+    onNavigateToChat: (Long) -> Unit,
+    modifier: Modifier = Modifier,
+    chatListViewModel: ChatListViewModel = viewModel()
 ) {
-    val chatListViewModel: ChatListViewModel = viewModel()
     val conversations by chatListViewModel.uiConversations.collectAsStateWithLifecycle()
+    val newConversationId by remember { chatListViewModel.newConversationId }
     val scrollState = rememberLazyListState()
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         bottomBar = {
             BottomAppBarComponent(createConvo = {
                 chatListViewModel.createConvo()
@@ -105,6 +111,15 @@ fun ChatListScreen(
                         )
                     })
 
+            }
+        }
+
+        LaunchedEffect(key1 = newConversationId) {
+            Log.d("ChatListScreen", "newConversationId $newConversationId")
+            if (newConversationId != NO_CONVERSATION_CREATED) {
+                onNavigateToChat.invoke(newConversationId)
+                // reset
+                chatListViewModel.newConversationId.value = NO_CONVERSATION_CREATED
             }
         }
     }

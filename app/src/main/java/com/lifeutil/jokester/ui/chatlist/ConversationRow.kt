@@ -13,13 +13,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lifeutil.jokester.model.UiConversation
 
 @Composable
-fun ConversationRow(modifier: Modifier, conversation: UiConversation) {
+fun ConversationRow(conversation: UiConversation, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -42,7 +43,9 @@ fun ConversationRow(modifier: Modifier, conversation: UiConversation) {
                 Text(
                     text = "${conversation.topic} ${conversation.id}",
                     fontSize = 20.sp,
-                    modifier = Modifier.weight(1f).padding(end = 8.dp)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
                 )
                 Text(
                     text = "${conversation.lastUpdated}",
@@ -51,8 +54,11 @@ fun ConversationRow(modifier: Modifier, conversation: UiConversation) {
             }
 
             Text(
-                text = conversation.topic,
-                color = Color.LightGray
+                text = conversation.lastMessage,
+                color = Color.LightGray,
+                modifier = Modifier.padding(top = 4.dp, bottom = 6.dp),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

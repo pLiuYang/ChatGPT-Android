@@ -2,6 +2,7 @@ package com.lifeutil.jokester.data
 
 import android.util.Log
 import com.aallam.openai.api.BetaOpenAI
+import com.aallam.openai.api.chat.ChatCompletion
 import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
@@ -44,6 +45,9 @@ class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
                 fromMe = true
             )
         )
+
+        // side effect
+        updateConvoLastMessage(messageText)
     }
 
     @OptIn(BetaOpenAI::class)
@@ -56,6 +60,25 @@ class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
             messages = getHistoryMessages(previousMessages, newMessage)
         )
         val completion = OpenAIHelper.openAI.chatCompletion(completionRequest)
+        handleCompletionResponse(completion)
+
+        // side effect
+        completion.choices.lastOrNull()?.let {
+            it.message?.content?.let { text ->
+                updateConvoLastMessage(text)
+            }
+        }
+
+        // decrease loading count
+        requestCount.decrementAndGet()
+    }
+
+    override suspend fun deleteMessages(convoId: Long) {
+        messageDao.deleteMessages(convoId)
+    }
+
+    @OptIn(BetaOpenAI::class)
+    private suspend fun handleCompletionResponse(completion: ChatCompletion) {
         Log.i(
             TAG,
             "token usage: prompt - ${completion.usage?.promptTokens}, completion - ${completion.usage?.completionTokens}"
@@ -70,13 +93,14 @@ class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
                 )
             )
         }
-
-        // decrease loading count
-        requestCount.decrementAndGet()
     }
 
-    override suspend fun deleteMessages(convoId: Long) {
-        messageDao.deleteMessages(convoId)
+    private fun updateConvoLastMessage(messageText: String) {
+        conversationDao.updateConversationLastMessage(
+            conversationId,
+            messageText,
+            System.currentTimeMillis()
+        )
     }
 
     @OptIn(BetaOpenAI::class)

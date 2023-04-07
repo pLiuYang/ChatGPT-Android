@@ -44,16 +44,16 @@ class MainActivity : ComponentActivity() {
                             type = NavType.LongType
                         }),
                         enterTransition = {
-                            slideIntoContainer(SlideDirection.Left, animationSpec = tween(700))
+                            slideIntoContainer(SlideDirection.Left, animationSpec = tween(400))
                         },
                         exitTransition = {
-                            slideOutOfContainer(SlideDirection.Left, animationSpec = tween(700))
+                            slideOutOfContainer(SlideDirection.Left, animationSpec = tween(400))
                         },
                         popEnterTransition = {
-                            slideIntoContainer(SlideDirection.Right, animationSpec = tween(700))
+                            slideIntoContainer(SlideDirection.Right, animationSpec = tween(400))
                         },
                         popExitTransition = {
-                            slideOutOfContainer(SlideDirection.Right, animationSpec = tween(700))
+                            slideOutOfContainer(SlideDirection.Right, animationSpec = tween(400))
                         }
                     ) { navBackStackEntry ->
                         /* Extracting the id from the route */
@@ -74,6 +74,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     JokesterTheme {
-        ChatListScreen {}
+        ChatListScreen(onNavigateToChat = { })
     }
 }

@@ -20,8 +20,7 @@ class ChatListRepository {
             val now = System.currentTimeMillis()
 
             dbList.map {
-                // todo last message
-                UiConversation(it.id, it.topic, "", getRelativeDateTime(now, it.lastUpdated))
+                UiConversation(it.id, it.topic, it.lastMessage, getRelativeDateTime(now, it.lastUpdated))
             }
         }
 
@@ -30,6 +29,7 @@ class ChatListRepository {
             DBConversation(
                 topic = "topic",
                 context = "context",
+                lastMessage = "",
                 lastUpdated = System.currentTimeMillis()
             )
         )
