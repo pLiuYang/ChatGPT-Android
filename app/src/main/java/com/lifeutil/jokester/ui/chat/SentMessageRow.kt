@@ -25,8 +25,8 @@ import com.lifeutil.jokester.ui.util.SubcomposeColumn
 fun SentMessageRow(
     text: String,
     messageTime: String,
-    messageStatus: MessageStatus = MessageStatus.READ,
-    modifier: Modifier
+    modifier: Modifier = Modifier,
+    messageStatus: MessageStatus = MessageStatus.READ
 ) {
     // Whole column that contains chat bubble and padding on start or end
     Column(

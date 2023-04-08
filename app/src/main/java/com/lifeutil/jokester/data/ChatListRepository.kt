@@ -1,11 +1,12 @@
 package com.lifeutil.jokester.data
 
-import android.text.format.DateUtils
 import android.util.Log
 import com.lifeutil.jokester.DBHelper
 import com.lifeutil.jokester.data.db.ConversationDao
 import com.lifeutil.jokester.data.db.DBConversation
+import com.lifeutil.jokester.model.AsstType
 import com.lifeutil.jokester.model.UiConversation
+import com.lifeutil.jokester.ui.util.toUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -20,16 +21,16 @@ class ChatListRepository {
             val now = System.currentTimeMillis()
 
             dbList.map {
-                UiConversation(it.id, it.topic, it.lastMessage, getRelativeDateTime(now, it.lastUpdated))
+                it.toUiModel(now)
             }
         }
 
     suspend fun createConvo(): Long {
         return convoDao.insertConversation(
             DBConversation(
-                topic = "General topic ${DataConstants.getRandomEmoji()}",
-                context = "context",
-                lastMessage = "",
+                topic = "Omni-assistant ${DataConstants.getRandomEmoji()}",
+                asstType = AsstType.DEFAULT.value,
+                lastMessage = "Click to start chat",
                 lastUpdated = System.currentTimeMillis()
             )
         )
@@ -40,20 +41,6 @@ class ChatListRepository {
     }
 
     fun getUiConversations(): Flow<List<UiConversation>> = uiConversations
-
-    private fun getRelativeDateTime(now: Long, lastUpdated: Long): CharSequence {
-        val timeDiff = now - lastUpdated
-        return if (timeDiff <= DateUtils.MINUTE_IN_MILLIS) {
-            "just now"
-        } else {
-            DateUtils.getRelativeTimeSpanString(
-                lastUpdated,
-                now,
-                DateUtils.MINUTE_IN_MILLIS,
-                DateUtils.FORMAT_ABBREV_RELATIVE
-            )
-        }
-    }
 
     companion object {
         private const val TAG = "ChatListRepository"

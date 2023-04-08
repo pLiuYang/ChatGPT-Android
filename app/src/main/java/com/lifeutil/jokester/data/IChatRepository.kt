@@ -1,6 +1,7 @@
 package com.lifeutil.jokester.data
 
 import com.lifeutil.jokester.model.UiChatMessage
+import com.lifeutil.jokester.model.UiConversation
 import kotlinx.coroutines.flow.Flow
 
 interface IChatRepository {
@@ -16,5 +17,5 @@ interface IChatRepository {
 
     fun getUiChatMessages(): Flow<List<UiChatMessage>>
 
-    fun getChatTopic(): Flow<String>
+    fun getConversation(): Flow<UiConversation>
 }

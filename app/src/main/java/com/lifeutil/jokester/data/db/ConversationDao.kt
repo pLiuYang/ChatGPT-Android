@@ -27,4 +27,7 @@ interface ConversationDao {
 
     @Query("Update conversation_table SET last_message=:messageText, last_updated=:lastUpdated WHERE id=:conversationId")
     fun updateConversationLastMessage(conversationId: Long, messageText: String, lastUpdated: Long)
+
+    @Query("Update conversation_table SET last_message=:messageText WHERE id=:conversationId")
+    fun updateConversationLastMessage(conversationId: Long, messageText: String)
 }

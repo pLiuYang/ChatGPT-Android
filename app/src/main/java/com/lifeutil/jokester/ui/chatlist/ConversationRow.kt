@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lifeutil.jokester.model.AsstType
 import com.lifeutil.jokester.model.UiConversation
 
 @Composable
@@ -59,7 +60,7 @@ fun ConversationRow(conversation: UiConversation, modifier: Modifier = Modifier)
 
             Text(
                 text = conversation.lastMessage,
-                color = Color.LightGray,
+                color = Color.Gray,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(top = 4.dp, bottom = 6.dp),
                 maxLines = 1,
@@ -74,6 +75,6 @@ fun ConversationRow(conversation: UiConversation, modifier: Modifier = Modifier)
 private fun PreviewConversationRow() {
     ConversationRow(
         modifier = Modifier.fillMaxWidth(),
-        conversation = UiConversation(1, "translator", "last message", "today")
+        conversation = UiConversation(1, "translator", AsstType.DEFAULT, "last message", "today")
     )
 }

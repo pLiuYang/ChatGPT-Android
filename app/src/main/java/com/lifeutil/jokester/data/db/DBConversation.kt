@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class DBConversation(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long = 0,
     @ColumnInfo(name = "topic") val topic: String, // title/name of the conversation
-    @ColumnInfo(name = "context") val context: String, // to be changed to types
+    @ColumnInfo(name = "asst_type") val asstType: Int,
     @ColumnInfo(name = "last_message") val lastMessage: String,
     @ColumnInfo(name = "last_updated") val lastUpdated: Long,
 )

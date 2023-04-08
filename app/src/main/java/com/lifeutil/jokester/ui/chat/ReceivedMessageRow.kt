@@ -23,8 +23,8 @@ import com.lifeutil.jokester.ui.util.ThreeDotsLoading
 fun ReceivedMessageRow(
     text: String,
     messageTime: String,
-    isLoading: Boolean = false,
-    modifier: Modifier
+    modifier: Modifier = Modifier,
+    isLoading: Boolean = false
 ) {
     // Whole column that contains chat bubble and padding on start or end
     Column(

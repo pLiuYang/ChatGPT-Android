@@ -12,6 +12,8 @@ import com.lifeutil.jokester.OpenAIHelper
 import com.lifeutil.jokester.data.db.DBMessage
 import com.lifeutil.jokester.data.db.MessageDao
 import com.lifeutil.jokester.model.UiChatMessage
+import com.lifeutil.jokester.model.UiConversation
+import com.lifeutil.jokester.ui.util.toUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.concurrent.atomic.AtomicInteger
@@ -29,11 +31,13 @@ class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
             dbListToUiModel(dbList)
         }
 
-    private val chatTopic: Flow<String> =
-        conversationDao.getConversation(conversationId).map { it.topic }
+    private val chatTopic: Flow<UiConversation> =
+        conversationDao.getConversation(conversationId).map {
+            it.toUiModel(0) // do not need relative time
+        }
 
     override fun getUiChatMessages(): Flow<List<UiChatMessage>> = uiChatMessages
-    override fun getChatTopic(): Flow<String> = chatTopic
+    override fun getConversation(): Flow<UiConversation> = chatTopic
 
     override suspend fun addUserMessage(messageText: String) {
         // add into Database
@@ -78,6 +82,11 @@ class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
 
     override suspend fun deleteMessages(convoId: Long) {
         messageDao.deleteMessages(convoId)
+
+        conversationDao.updateConversationLastMessage(
+            conversationId,
+            "Click to start chat",
+        )
     }
 
     @OptIn(BetaOpenAI::class)
@@ -121,14 +130,7 @@ class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
     private fun dbListToUiModel(dbMessages: List<DBMessage>): List<UiChatMessage> {
         val res = mutableListOf<UiChatMessage>()
         dbMessages.forEach { dbMessage ->
-            res.add(
-                UiChatMessage(
-                    dbMessage.id,
-                    dbMessage.message,
-                    dbMessage.lastUpdated,
-                    dbMessage.fromMe
-                )
-            )
+            res.add(dbMessage.toUiModel())
         }
         if (isLoading()) res.add(loadingFakeMsg)
         return res

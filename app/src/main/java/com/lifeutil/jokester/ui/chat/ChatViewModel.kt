@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.lifeutil.jokester.data.IChatRepository
 import com.lifeutil.jokester.data.OpenAIChatRepository
+import com.lifeutil.jokester.model.AsstType
+import com.lifeutil.jokester.model.UiConversation
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
@@ -19,7 +21,8 @@ class ChatViewModel(
 
     val uiChatMessages = chatRepository.getUiChatMessages()
         .stateIn(viewModelScope, WhileSubscribed(), emptyList())
-    val chatTopic = chatRepository.getChatTopic().stateIn(viewModelScope, WhileSubscribed(), "")
+    val conversation = chatRepository.getConversation()
+        .stateIn(viewModelScope, WhileSubscribed(), UiConversation(0, "", AsstType.DEFAULT, "", ""))
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
         Log.e(TAG, "Handle $exception")
