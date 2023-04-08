@@ -39,9 +39,12 @@ fun ConversationRow(conversation: UiConversation, modifier: Modifier = Modifier)
                 .weight(1f)
                 .padding(end = 12.dp)
         ) {
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
-                    text = "${conversation.topic} ${conversation.id}",
+                    text = conversation.topic,
                     fontSize = 20.sp,
                     modifier = Modifier
                         .weight(1f)
@@ -49,13 +52,15 @@ fun ConversationRow(conversation: UiConversation, modifier: Modifier = Modifier)
                 )
                 Text(
                     text = "${conversation.lastUpdated}",
-                    color = Color.LightGray
+                    color = Color.LightGray,
+                    fontSize = 14.sp
                 )
             }
 
             Text(
                 text = conversation.lastMessage,
                 color = Color.LightGray,
+                fontSize = 16.sp,
                 modifier = Modifier.padding(top = 4.dp, bottom = 6.dp),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

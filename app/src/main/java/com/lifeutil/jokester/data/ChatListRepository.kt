@@ -27,7 +27,7 @@ class ChatListRepository {
     suspend fun createConvo(): Long {
         return convoDao.insertConversation(
             DBConversation(
-                topic = "topic",
+                topic = "General topic ${DataConstants.getRandomEmoji()}",
                 context = "context",
                 lastMessage = "",
                 lastUpdated = System.currentTimeMillis()

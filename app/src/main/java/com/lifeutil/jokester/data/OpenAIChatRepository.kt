@@ -55,9 +55,12 @@ class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
         // increase loading count
         requestCount.incrementAndGet()
 
+        val historyMessages = getHistoryMessages(previousMessages, newMessage)
+//        val systemMessage = ChatMessage(role = ChatRole.System, content = "You are an English to Chinese dictionary. Display meaning of the words with sample")
         val completionRequest = ChatCompletionRequest(
             model = modelId,
-            messages = getHistoryMessages(previousMessages, newMessage)
+            messages = historyMessages
+//            messages = listOf(systemMessage) + historyMessages
         )
         val completion = OpenAIHelper.openAI.chatCompletion(completionRequest)
         handleCompletionResponse(completion)
