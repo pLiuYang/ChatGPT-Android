@@ -30,8 +30,8 @@ fun ConversationRow(conversation: UiConversation, modifier: Modifier = Modifier)
             imageVector = Icons.Filled.SupportAgent,
             contentDescription = "icon",
             modifier = Modifier
-                .padding(12.dp)
-                .size(36.dp),
+                .padding(8.dp)
+                .size(42.dp),
             alpha = 0.6f
         )
 
@@ -46,7 +46,7 @@ fun ConversationRow(conversation: UiConversation, modifier: Modifier = Modifier)
             ) {
                 Text(
                     text = conversation.topic,
-                    fontSize = 20.sp,
+                    fontSize = 16.sp,
                     modifier = Modifier
                         .weight(1f)
                         .padding(end = 8.dp)
@@ -54,15 +54,15 @@ fun ConversationRow(conversation: UiConversation, modifier: Modifier = Modifier)
                 Text(
                     text = "${conversation.lastUpdated}",
                     color = Color.LightGray,
-                    fontSize = 14.sp
+                    fontSize = 12.sp
                 )
             }
 
             Text(
                 text = conversation.lastMessage,
                 color = Color.Gray,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(top = 4.dp, bottom = 6.dp),
+                fontSize = 14.sp,
+                modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

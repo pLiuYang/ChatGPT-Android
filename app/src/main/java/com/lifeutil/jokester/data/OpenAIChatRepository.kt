@@ -11,6 +11,8 @@ import com.lifeutil.jokester.DBHelper
 import com.lifeutil.jokester.OpenAIHelper
 import com.lifeutil.jokester.data.db.DBMessage
 import com.lifeutil.jokester.data.db.MessageDao
+import com.lifeutil.jokester.model.AsstType
+import com.lifeutil.jokester.model.UiAsstType
 import com.lifeutil.jokester.model.UiChatMessage
 import com.lifeutil.jokester.model.UiConversation
 import com.lifeutil.jokester.ui.util.toUiModel
@@ -31,13 +33,13 @@ class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
             dbListToUiModel(dbList)
         }
 
-    private val chatTopic: Flow<UiConversation> =
+    private val uiConversation: Flow<UiConversation> =
         conversationDao.getConversation(conversationId).map {
             it.toUiModel(0) // do not need relative time
         }
 
     override fun getUiChatMessages(): Flow<List<UiChatMessage>> = uiChatMessages
-    override fun getConversation(): Flow<UiConversation> = chatTopic
+    override fun getConversation(): Flow<UiConversation> = uiConversation
 
     override suspend fun addUserMessage(messageText: String) {
         // add into Database
@@ -55,16 +57,22 @@ class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
     }
 
     @OptIn(BetaOpenAI::class)
-    override suspend fun sendRequest(previousMessages: List<UiChatMessage>, newMessage: String) {
+    override suspend fun sendRequest(
+        previousMessages: List<UiChatMessage>,
+        newMessage: String,
+        asstType: AsstType
+    ) {
         // increase loading count
         requestCount.incrementAndGet()
 
         val historyMessages = getHistoryMessages(previousMessages, newMessage)
-//        val systemMessage = ChatMessage(role = ChatRole.System, content = "You are an English to Chinese dictionary. Display meaning of the words with sample")
+        val systemMessage = ChatMessage(
+            role = ChatRole.System,
+            content = AsstType.getSystemMessage(asstType).systemMessage
+        )
         val completionRequest = ChatCompletionRequest(
             model = modelId,
-            messages = historyMessages
-//            messages = listOf(systemMessage) + historyMessages
+            messages = listOf(systemMessage) + historyMessages
         )
         val completion = OpenAIHelper.openAI.chatCompletion(completionRequest)
         handleCompletionResponse(completion)
@@ -86,6 +94,14 @@ class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
         conversationDao.updateConversationLastMessage(
             conversationId,
             "Click to start chat",
+        )
+    }
+
+    override suspend fun updateConversationType(asstType: UiAsstType) {
+        conversationDao.updateConversationAsstType(
+            conversationId,
+            asstType.type.value,
+            asstType.title + DataConstants.getRandomEmoji()
         )
     }
 

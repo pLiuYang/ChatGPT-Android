@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.aallam.openai.api.exception.OpenAITimeoutException
 import com.lifeutil.jokester.data.IChatRepository
 import com.lifeutil.jokester.data.OpenAIChatRepository
 import com.lifeutil.jokester.model.AsstType
+import com.lifeutil.jokester.model.UiAsstType
 import com.lifeutil.jokester.model.UiConversation
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -26,18 +28,27 @@ class ChatViewModel(
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
         Log.e(TAG, "Handle $exception")
+        if (exception is OpenAITimeoutException) {
+            // hide loading indicator
+        }
     }
 
     fun addUserMessage(messageText: String) {
         viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
             chatRepository.addUserMessage(messageText)
-            chatRepository.sendRequest(uiChatMessages.value, messageText)
+            chatRepository.sendRequest(uiChatMessages.value, messageText, conversation.value.asstType)
         }
     }
 
     fun deleteAllMessages() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
             chatRepository.deleteMessages(conversationId)
+        }
+    }
+
+    fun updateConvoType(uiAsstType: UiAsstType) {
+        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+            chatRepository.updateConversationType(uiAsstType)
         }
     }
 

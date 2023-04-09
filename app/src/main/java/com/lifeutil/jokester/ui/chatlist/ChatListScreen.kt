@@ -154,7 +154,7 @@ private fun BottomAppBarComponent(createConvo: (() -> Unit)? = null) {
                     modifier = Modifier.size(36.dp),
                     tint = Color(0xFFffcc33)
                 )
-                Text(text = "10 coins")
+                Text(text = "1000 coins")
             }
             IconButton(onClick = { /* Settings onClick */ }) {
                 Icon(

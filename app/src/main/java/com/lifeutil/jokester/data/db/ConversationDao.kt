@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.lifeutil.jokester.model.AsstType
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -30,4 +31,7 @@ interface ConversationDao {
 
     @Query("Update conversation_table SET last_message=:messageText WHERE id=:conversationId")
     fun updateConversationLastMessage(conversationId: Long, messageText: String)
+
+    @Query("Update conversation_table SET asst_type=:asstType, topic=:newTopic WHERE id=:conversationId")
+    fun updateConversationAsstType(conversationId: Long, asstType: Int, newTopic: String)
 }

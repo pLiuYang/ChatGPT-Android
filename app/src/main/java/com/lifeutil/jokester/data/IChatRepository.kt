@@ -1,5 +1,7 @@
 package com.lifeutil.jokester.data
 
+import com.lifeutil.jokester.model.AsstType
+import com.lifeutil.jokester.model.UiAsstType
 import com.lifeutil.jokester.model.UiChatMessage
 import com.lifeutil.jokester.model.UiConversation
 import kotlinx.coroutines.flow.Flow
@@ -8,7 +10,11 @@ interface IChatRepository {
 
     suspend fun addUserMessage(messageText: String)
 
-    suspend fun sendRequest(previousMessages: List<UiChatMessage>, newMessage: String)
+    suspend fun sendRequest(
+        previousMessages: List<UiChatMessage>,
+        newMessage: String,
+        asstType: AsstType
+    )
 
     /**
      * Delete messages in this conversation
@@ -18,4 +24,6 @@ interface IChatRepository {
     fun getUiChatMessages(): Flow<List<UiChatMessage>>
 
     fun getConversation(): Flow<UiConversation>
+
+    suspend fun updateConversationType(asstType: UiAsstType)
 }

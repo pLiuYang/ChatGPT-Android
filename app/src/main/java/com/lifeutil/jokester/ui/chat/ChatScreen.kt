@@ -2,9 +2,10 @@ package com.lifeutil.jokester.ui.chat
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -12,21 +13,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lifeutil.jokester.model.AsstType
@@ -34,7 +38,7 @@ import com.lifeutil.jokester.model.UiChatMessage
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
     conversationId: Long,
@@ -46,6 +50,11 @@ fun ChatScreen(
     val conversation by chatViewModel.conversation.collectAsStateWithLifecycle()
     val sdf = remember { SimpleDateFormat("hh:mm a", Locale.ROOT) }
 //    val context = LocalContext.current
+
+    // BottomSheet
+//    val coroutineScope = rememberCoroutineScope()
+    var openBottomSheet by rememberSaveable { mutableStateOf(false) }
+    val modalSheetState = rememberModalBottomSheetState()
 
     Column(
         modifier = modifier
@@ -77,7 +86,7 @@ fun ChatScreen(
         ) {
             if (conversation.asstType == AsstType.DEFAULT) {
                 item {
-                   TopicHint()
+                    TopicHint(onClickAction = { openBottomSheet = !openBottomSheet })
                 }
             }
 
@@ -120,5 +129,54 @@ fun ChatScreen(
 //                    scrollState.animateScrollToItem(messages.size - 1)
 //                }
             })
+
+        if (openBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { openBottomSheet = false },
+                sheetState = modalSheetState,
+                content = {
+                    val types = listOf(
+                        AsstType.DEFAULT,
+                        AsstType.TRAVEL_PLANNER,
+                        AsstType.TRANSLATOR,
+                        AsstType.EN_DICTIONARY,
+                        AsstType.MATH
+                    )
+
+                    types.forEach {
+                        val uiAsstType = AsstType.getSystemMessage(it)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 12.dp, end = 12.dp, bottom = 4.dp)
+                                .clickable {
+                                    chatViewModel.updateConvoType(uiAsstType)
+                                    openBottomSheet = false
+                                },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                uiAsstType.icon,
+                                contentDescription = "",
+                                modifier = Modifier.padding(12.dp),
+                                tint = Color.Gray
+                            )
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(top = 8.dp, bottom = 8.dp)
+                            ) {
+                                Text(
+                                    text = uiAsstType.title,
+                                    fontSize = 18.sp,
+                                    modifier = Modifier.padding(bottom = 4.dp)
+                                )
+                                Text(text = uiAsstType.hint, fontSize = 14.sp, color = Color.Gray)
+                            }
+                        }
+                    }
+                }
+            )
+        }
     }
 }
