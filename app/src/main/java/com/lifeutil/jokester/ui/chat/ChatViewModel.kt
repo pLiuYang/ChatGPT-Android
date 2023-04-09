@@ -29,12 +29,16 @@ class ChatViewModel(
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
         Log.e(TAG, "Handle $exception")
         if (exception is OpenAITimeoutException) {
-            // hide loading indicator
+            chatRepository.decrementRequestCount()
+            viewModelScope.launch(Dispatchers.IO) {
+                chatRepository.addSystemMessage("Sorry I don't understand, please elaborate")
+            }
         }
     }
 
     fun addUserMessage(messageText: String) {
         viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
+            chatRepository.incrementRequestCount()
             chatRepository.addUserMessage(messageText)
             chatRepository.sendRequest(uiChatMessages.value, messageText, conversation.value.asstType)
         }

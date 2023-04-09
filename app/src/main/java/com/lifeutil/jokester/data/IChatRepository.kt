@@ -10,11 +10,17 @@ interface IChatRepository {
 
     suspend fun addUserMessage(messageText: String)
 
+    suspend fun addSystemMessage(messageText: String)
+
     suspend fun sendRequest(
         previousMessages: List<UiChatMessage>,
         newMessage: String,
         asstType: AsstType
     )
+
+    fun incrementRequestCount()
+
+    fun decrementRequestCount()
 
     /**
      * Delete messages in this conversation

@@ -56,15 +56,24 @@ class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
         updateConvoLastMessage(messageText)
     }
 
+    override suspend fun addSystemMessage(messageText: String) {
+        // add into Database
+        messageDao.insertMessage(
+            DBMessage(
+                conversationId = conversationId,
+                message = messageText,
+                lastUpdated = System.currentTimeMillis(),
+                fromMe = false
+            )
+        )
+    }
+
     @OptIn(BetaOpenAI::class)
     override suspend fun sendRequest(
         previousMessages: List<UiChatMessage>,
         newMessage: String,
         asstType: AsstType
     ) {
-        // increase loading count
-        requestCount.incrementAndGet()
-
         val historyMessages = getHistoryMessages(previousMessages, newMessage)
         val systemMessage = ChatMessage(
             role = ChatRole.System,
@@ -84,6 +93,17 @@ class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
             }
         }
 
+        decrementRequestCount()
+    }
+
+    override fun incrementRequestCount() {
+        Log.d(TAG, "incrementRequestCount ${requestCount.get()}")
+        // increase loading count
+        requestCount.incrementAndGet()
+    }
+
+    override fun decrementRequestCount() {
+        Log.d(TAG, "incrementRequestCount ${requestCount.get()}")
         // decrease loading count
         requestCount.decrementAndGet()
     }
@@ -152,7 +172,7 @@ class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
         return res
     }
 
-    private fun isLoading() = requestCount.get() != 0
+    private fun isLoading() = requestCount.get() > 0
 
     companion object {
         private const val TAG = "OpenAIChatRepository"

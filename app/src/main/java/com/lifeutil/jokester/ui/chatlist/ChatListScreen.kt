@@ -63,7 +63,7 @@ fun ChatListScreen(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         bottomBar = {
-            BottomAppBarComponent(createConvo = {
+            ChatListBottomAppBar(createConvo = {
                 chatListViewModel.createConvo()
             })
         }
@@ -123,59 +123,4 @@ fun ChatListScreen(
             }
         }
     }
-}
-
-// testing
-@Composable
-private fun BottomAppBarComponent(createConvo: (() -> Unit)? = null) {
-    BottomAppBar(
-        containerColor = TealDeer,
-        contentColor = Color.Gray,
-        tonalElevation = 4.dp,
-        actions = {
-            val context = LocalContext.current
-            Row(
-                modifier = Modifier
-                    .padding(12.dp)
-                    .clickable {
-                        Toast
-                            .makeText(
-                                context,
-                                "Tips to your AI assistant. Free daily top up.",
-                                Toast.LENGTH_SHORT
-                            )
-                            .show()
-                    },
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    Icons.Filled.Savings,
-                    contentDescription = "",
-                    modifier = Modifier.size(36.dp),
-                    tint = Color(0xFFffcc33)
-                )
-                Text(text = "1000 coins")
-            }
-            IconButton(onClick = { /* Settings onClick */ }) {
-                Icon(
-                    Icons.Filled.Settings,
-                    contentDescription = "",
-                    modifier = Modifier.size(36.dp),
-                    tint = Color.LightGray
-                )
-            }
-        },
-        modifier = Modifier.clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp)),
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { createConvo?.invoke() },
-                containerColor = AiGreen
-            ) {
-                Icon(
-                    Icons.Filled.Add, tint = Color.White,
-                    contentDescription = null
-                )
-            }
-        }
-    )
 }
