@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lifeutil.jokester.model.AsstType
+import com.lifeutil.jokester.model.UiAsstType
 import com.lifeutil.jokester.model.UiChatMessage
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -145,34 +146,9 @@ fun ChatScreen(
 
                     types.forEach {
                         val uiAsstType = AsstType.getSystemMessage(it)
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 12.dp, end = 12.dp, bottom = 4.dp)
-                                .clickable {
-                                    chatViewModel.updateConvoType(uiAsstType)
-                                    openBottomSheet = false
-                                },
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                uiAsstType.icon,
-                                contentDescription = "",
-                                modifier = Modifier.padding(12.dp),
-                                tint = Color.Gray
-                            )
-                            Column(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(top = 8.dp, bottom = 8.dp)
-                            ) {
-                                Text(
-                                    text = uiAsstType.title,
-                                    fontSize = 18.sp,
-                                    modifier = Modifier.padding(bottom = 4.dp)
-                                )
-                                Text(text = uiAsstType.hint, fontSize = 14.sp, color = Color.Gray)
-                            }
+                        ConversationTypeRow(uiAsstType = uiAsstType) {
+                            chatViewModel.updateConvoType(uiAsstType)
+                            openBottomSheet = false
                         }
                     }
                 }

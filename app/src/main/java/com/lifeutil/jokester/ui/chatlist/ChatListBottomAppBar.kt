@@ -26,7 +26,11 @@ import com.lifeutil.jokester.ui.theme.AiGreen
 import com.lifeutil.jokester.ui.theme.TealDeer
 
 @Composable
-fun ChatListBottomAppBar(modifier: Modifier = Modifier, createConvo: (() -> Unit)? = null) {
+fun ChatListBottomAppBar(
+    modifier: Modifier = Modifier,
+    createConvo: (() -> Unit)? = null,
+    openSettings: (() -> Unit)? = null
+) {
     BottomAppBar(
         containerColor = TealDeer,
         contentColor = Color.Gray,
@@ -55,7 +59,7 @@ fun ChatListBottomAppBar(modifier: Modifier = Modifier, createConvo: (() -> Unit
                 )
                 Text(text = "1000 coins")
             }
-            IconButton(onClick = { /* Settings onClick */ }) {
+            IconButton(onClick = { openSettings?.invoke() }) {
                 Icon(
                     Icons.Filled.Settings,
                     contentDescription = "",
