@@ -15,6 +15,7 @@ import com.lifeutil.jokester.model.AsstType
 import com.lifeutil.jokester.model.UiAsstType
 import com.lifeutil.jokester.model.UiChatMessage
 import com.lifeutil.jokester.model.UiConversation
+import com.lifeutil.jokester.ui.util.SPUtil
 import com.lifeutil.jokester.ui.util.toUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -131,6 +132,8 @@ class OpenAIChatRepository(private val conversationId: Long) : IChatRepository {
             TAG,
             "token usage: prompt - ${completion.usage?.promptTokens}, completion - ${completion.usage?.completionTokens}"
         )
+        val cost = (completion.usage?.totalTokens ?: 0) / 10
+        SPUtil.costCoins(cost)
         completion.choices.forEach {
             messageDao.insertMessage(
                 DBMessage(

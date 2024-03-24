@@ -6,6 +6,7 @@ import com.aallam.openai.api.http.Timeout
 import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
 import com.lifeutil.jokester.data.db.ChatDatabase
+import com.lifeutil.jokester.ui.util.SPUtil
 import kotlin.time.Duration.Companion.seconds
 
 class JokesterApplication : Application() {
@@ -14,6 +15,11 @@ class JokesterApplication : Application() {
         super.onCreate()
 
         OpenAIHelper.init("")
+
+        DBHelper.init(applicationContext)
+
+        // refactor this
+        SPUtil.sharedPref = getSharedPreferences("main_pref", MODE_PRIVATE)
     }
 }
 

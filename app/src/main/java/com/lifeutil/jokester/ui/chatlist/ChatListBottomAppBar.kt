@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.lifeutil.jokester.ui.theme.AiGreen
 import com.lifeutil.jokester.ui.theme.TealDeer
+import com.lifeutil.jokester.ui.util.SPUtil
 
 @Composable
 fun ChatListBottomAppBar(
@@ -57,7 +58,7 @@ fun ChatListBottomAppBar(
                     modifier = Modifier.size(36.dp),
                     tint = Color(0xFFffcc33)
                 )
-                Text(text = "1000 coins")
+                Text(text = "${SPUtil.getRemainCoins()} coins")
             }
             IconButton(onClick = { openSettings?.invoke() }) {
                 Icon(
